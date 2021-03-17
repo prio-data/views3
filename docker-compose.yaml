@@ -1,0 +1,37 @@
+services:
+   base-data-retriever:
+      build: base_data_retriever/.
+      environment:
+         - PRODUCTION=0
+         - REST_ENV_URL=http://mock-config
+      ports:
+         - "8003:80"
+
+   data-transformer:
+      build: views_transform/.
+      environment:
+         - PRODUCTION=0
+         - REST_ENV_URL=http://mock-config
+      ports:
+         - "8002:80"
+   router:
+      build: views_router/.
+      environment:
+         - PRODUCTION=0
+         - REST_ENV_URL=http://mock-config
+      ports:
+         - "8001:80"
+   mock-config:
+      build: rest-env/.
+      environment:
+         - data-router-url=http://router
+         - time-caster-url=http://time-caster
+         - base-data-retriever-url=http://base-data-retriever
+         - transformer-url=http://data-transformer
+         - base-db-name=${DB_NAME}
+         - base-data-schema=${DB_SCHEMA}
+         - db-host=${DB_HOST}
+         - db-user=${DB_USER}
+         - db-password=${DB_PASSWORD}
+      ports:
+         - "9999:80"

@@ -1,0 +1,12 @@
+[submodule "base_data_retriever"]
+	path = base_data_retriever
+	url = https://github.com/uppsalaconflictdataprogram/base_data_retriever
+[submodule "views_transform"]
+	path = views_transform
+	url = https://github.com/uppsalaconflictdataprogram/views_transform
+[submodule "views_router"]
+	path = views_router
+	url = https://github.com/uppsalaconflictdataprogram/views_router
+[submodule "rest-env"]
+	path = rest-env
+	url = https://github.com/prio-data/rest-env
