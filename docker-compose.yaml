@@ -4,9 +4,13 @@ services:
       environment:
          - PRODUCTION=0
          - REST_ENV_URL=http://mock-config
+         - CACHE_DIR=cache/bdr
       ports:
          - "8003:80"
-
+      volumes:
+         - cache-vol:/base-data-retriever/cache
+      depends_on:
+         - "mock-config"
    data-transformer:
       build: views_transform/.
       environment:
@@ -14,6 +18,8 @@ services:
          - REST_ENV_URL=http://mock-config
       ports:
          - "8002:80"
+      depends_on:
+         - "mock-config"
    router:
       build: views_router/.
       environment:
@@ -21,13 +27,17 @@ services:
          - REST_ENV_URL=http://mock-config
       ports:
          - "8001:80"
+      volumes:
+         - cache-vol:/views-data-router/cache
+      depends_on:
+         - "mock-config"
    mock-config:
       build: rest-env/.
       environment:
          - data-router-url=http://router
          - time-caster-url=http://time-caster
          - base-data-retriever-url=http://base-data-retriever
-         - transformer-url=http://data-transformer
+         - data-transformer-url=http://data-transformer
          - base-db-name=${DB_NAME}
          - base-data-schema=${DB_SCHEMA}
          - db-host=${DB_HOST}
@@ -35,3 +45,5 @@ services:
          - db-password=${DB_PASSWORD}
       ports:
          - "9999:80"
+volumes:
+   cache-vol:
