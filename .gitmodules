@@ -10,3 +10,9 @@
 [submodule "rest-env"]
 	path = rest-env
 	url = https://github.com/prio-data/rest-env
+[submodule "views-job-manager"]
+	path = views-job-manager
+	url = https://github.com/prio-data/views-job-manager
+[submodule "views_queryset_manager"]
+	path = views_queryset_manager
+	url = https://github.com/uppsalaconflictdataprogram/views_queryset_manager

@@ -1,10 +1,8 @@
 services:
    base-data-retriever:
       build: base_data_retriever/.
-      environment:
-         - PRODUCTION=0
-         - REST_ENV_URL=http://mock-config
-         - CACHE_DIR=cache/bdr
+      env_file:
+         - sp/az_msi_local.env
       ports:
          - "8003:80"
       volumes:
@@ -31,15 +29,40 @@ services:
          - cache-vol:/views-data-router/cache
       depends_on:
          - "mock-config"
+   job-manager:
+      build: "views-job-manager/."
+      environment: 
+         - PRODUCTION=false
+         - DATA_ROUTER_URL=http://router
+         - JOB_TIMEOUT=600
+         - JOB_RETRY=2
+         - CACHE_DIR=cache/rtr
+      ports:
+         - "8000:80"
+      volumes:
+         - cache-vol:/views-job-manager/cache
+   queryset-manager:
+      build: "views_queryset_manager/."
+      environment:
+         - PRODUCTION=false
+         - REST_ENV_URL=http://mock-config
+      ports:
+         - "7999:80"
+
    mock-config:
       build: rest-env/.
       environment:
+         - log-level=INFO
+
          - data-router-url=http://router
          - time-caster-url=http://time-caster
          - base-data-retriever-url=http://base-data-retriever
          - data-transformer-url=http://data-transformer
+         - job-manager-url=http://job-manager
+
          - base-db-name=${DB_NAME}
          - base-data-schema=${DB_SCHEMA}
+         - queryset-schema=${DB_SCHEMA}
          - db-host=${DB_HOST}
          - db-user=${DB_USER}
          - db-password=${DB_PASSWORD}
