@@ -1,72 +1,76 @@
 services:
    base-data-retriever:
       build: base_data_retriever/.
+
+      environment:
+         - LOG_LEVEL=INFO
+
       env_file:
          - sp/az_msi_local.env
+
       ports:
          - "8003:80"
       volumes:
-         - cache-vol:/base-data-retriever/cache
-      depends_on:
-         - "mock-config"
+         - cache-vol:/base_data_retriever/cache
+
    data-transformer:
       build: views_transform/.
+
       environment:
-         - PRODUCTION=0
          - REST_ENV_URL=http://mock-config
+         - LOG_LEVEL=INFO
+
+         - ROUTER_URL=http://router
+
+      env_file:
+         - sp/az_msi_local.env
+
       ports:
          - "8002:80"
-      depends_on:
-         - "mock-config"
+
    router:
       build: views_router/.
+
       environment:
-         - PRODUCTION=0
          - REST_ENV_URL=http://mock-config
+         - LOG_LEVEL=INFO
+
+         - BASE_DATA_RETRIEVER_URL=http://base-data-retriever
+
+      env_file:
+         - sp/az_msi_local.env
+
       ports:
          - "8001:80"
       volumes:
-         - cache-vol:/views-data-router/cache
-      depends_on:
-         - "mock-config"
+         - cache-vol:/views_data_router/cache
+
    job-manager:
-      build: "views-job-manager/."
+      build: views_job_manager/.
+
       environment: 
-         - PRODUCTION=false
-         - DATA_ROUTER_URL=http://router
-         - JOB_TIMEOUT=600
-         - JOB_RETRY=2
-         - CACHE_DIR=cache/rtr
+         - LOG_LEVEL=INFO
+         - ROUTER_URL=http://router
+
+      env_file:
+         - sp/az_msi_local.env
+
       ports:
          - "8000:80"
       volumes:
-         - cache-vol:/views-job-manager/cache
+         - cache-vol:/views_job_manager/cache
+
    queryset-manager:
       build: "views_queryset_manager/."
+
       environment:
-         - PRODUCTION=false
-         - REST_ENV_URL=http://mock-config
+         - SOURCE_URL=http://job-manager
+         - LOG_LEVEL=INFO
+
+      env_file:
+         - sp/az_msi_local.env
+
       ports:
          - "7999:80"
-
-   mock-config:
-      build: rest-env/.
-      environment:
-         - log-level=INFO
-
-         - data-router-url=http://router
-         - time-caster-url=http://time-caster
-         - base-data-retriever-url=http://base-data-retriever
-         - data-transformer-url=http://data-transformer
-         - job-manager-url=http://job-manager
-
-         - base-db-name=${DB_NAME}
-         - base-data-schema=${DB_SCHEMA}
-         - queryset-schema=${DB_SCHEMA}
-         - db-host=${DB_HOST}
-         - db-user=${DB_USER}
-         - db-password=${DB_PASSWORD}
-      ports:
-         - "9999:80"
 volumes:
    cache-vol:
