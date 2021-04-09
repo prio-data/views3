@@ -18,7 +18,7 @@ services:
 
       environment:
          - REST_ENV_URL=http://mock-config
-         - LOG_LEVEL=INFO
+         - LOG_LEVEL=DEBUG
 
          - ROUTER_URL=http://router
 
@@ -34,8 +34,8 @@ services:
       environment:
          - REST_ENV_URL=http://mock-config
          - LOG_LEVEL=INFO
-
          - BASE_DATA_RETRIEVER_URL=http://base-data-retriever
+         - TRANSFORMER_URL=http://data-transformer
 
       env_file:
          - sp/az_msi_local.env
