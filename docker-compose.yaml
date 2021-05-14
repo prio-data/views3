@@ -1,78 +1,87 @@
-version: "3"
+version: "3.9"
 services:
    base-data-retriever:
       build: base_data_retriever/.
       image: prioreg.azurecr.io/views-base-data-retriever
 
-      environment:
-         - LOG_LEVEL=$LOG_LEVEL
-
       env_file:
-         - sp/az_msi_local.env
+         - $AUTH_FILE
+         - services.env 
 
       ports:
          - "8003:80"
+
       volumes:
          - cache-vol:/base_data_retriever/cache
+      networks:
+         - backend 
 
    data-transformer:
       build: views_transform/.
 
-      environment:
-         - LOG_LEVEL=$LOG_LEVEL
-         - ROUTER_URL=$ROUTER_URL
-
       env_file:
-         - sp/az_msi_local.env
+         - $AUTH_FILE
+         - services.env 
+
 
       ports:
          - "8002:80"
+
+      networks:
+         - backend 
 
    router:
       build: views_router/.
       image: prioreg.azurecr.io/views-router
 
-      environment:
-         - LOG_LEVEL=$LOG_LEVEL
-         - BASE_DATA_RETRIEVER_URL=$BASE_DATA_RETRIEVER_URL
-         - TRANSFORMER_URL=$TRANSFORMER_URL
-
       env_file:
-         - sp/az_msi_local.env
+         - $AUTH_FILE
+         - services.env 
+
 
       ports:
          - "8001:80"
+
       volumes:
          - cache-vol:/views_data_router/cache
+      networks:
+         - backend 
 
    job-manager:
       build: views_job_manager/.
       image: prioreg.azurecr.io/views-job-manager
 
-      environment: 
-         - LOG_LEVEL=$LOG_LEVEL
-         - ROUTER_URL=$ROUTER_URL
-
       env_file:
-         - sp/az_msi_local.env
+         - $AUTH_FILE
+         - services.env 
+
 
       ports:
          - "8000:80"
+
       volumes:
          - cache-vol:/views_job_manager/cache
+      networks:
+         - backend 
 
    queryset-manager:
       build: "views_queryset_manager/."
       image: prioreg.azurecr.io/views-queryset-manager
 
-      environment:
-         - SOURCE_URL=$JOB_MANAGER_URL
-         - LOG_LEVEL=$LOG_LEVEL
-
       env_file:
-         - sp/az_msi_local.env
+         - $AUTH_FILE
+         - services.env 
+
 
       ports:
          - "7999:80"
+
+      networks:
+         - backend 
+
 volumes:
    cache-vol:
+
+networks:
+   backend:
+      name: views-integration

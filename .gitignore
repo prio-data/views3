@@ -1,4 +1,5 @@
 venv/
 test_data/
-sp/*
-!sp/.gitkeep
+.env
+*.env
+!services.env
