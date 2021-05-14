@@ -18,6 +18,7 @@ services:
 
    data-transformer:
       build: views_transform/.
+      image: prioreg.azurecr.io/views-data-transformer
 
       env_file:
          - $AUTH_FILE
