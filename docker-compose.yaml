@@ -17,7 +17,7 @@ services:
          - backend 
 
    data-transformer:
-      build: views_transform/.
+      build: views_data_transformer/.
       image: prioreg.azurecr.io/views-data-transformer
 
       env_file:
