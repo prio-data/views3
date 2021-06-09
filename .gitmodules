@@ -1,18 +1,18 @@
 [submodule "base_data_retriever"]
 	path = base_data_retriever
-	url = https://github.com/uppsalaconflictdataprogram/base_data_retriever
-[submodule "views_transform"]
-	path = views_transform
-	url = https://github.com/uppsalaconflictdataprogram/views_transform
+	url = https://github.com/prio-data/base_data_retriever
+[submodule "views_data_transformer"]
+	path = views_data_transformer
+	url = https://github.com/prio-data/views_data_transformer
 [submodule "views_router"]
 	path = views_router
-	url = https://github.com/uppsalaconflictdataprogram/views_router
+	url = https://github.com/prio-data/views_router
 [submodule "views-job-manager"]
 	path = views_job_manager
 	url = https://github.com/prio-data/views_job_manager
 [submodule "views_queryset_manager"]
 	path = views_queryset_manager
-	url = https://github.com/uppsalaconflictdataprogram/views_queryset_manager
+	url = https://github.com/prio-data/views_queryset_manager
 [submodule "views_job_manager"]
 	path = views_job_manager
 	url = https://github.com/prio-data/views_job_manager

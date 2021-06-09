@@ -7,6 +7,7 @@ services:
       env_file:
          - $AUTH_FILE
          - services.env 
+         - config.env
 
       ports:
          - "8003:80"
@@ -23,6 +24,7 @@ services:
       env_file:
          - $AUTH_FILE
          - services.env 
+         - config.env
 
 
       ports:
@@ -38,6 +40,7 @@ services:
       env_file:
          - $AUTH_FILE
          - services.env 
+         - config.env
 
 
       ports:
@@ -55,7 +58,7 @@ services:
       env_file:
          - $AUTH_FILE
          - services.env 
-
+         - config.env
 
       ports:
          - "8000:80"
@@ -72,7 +75,7 @@ services:
       env_file:
          - $AUTH_FILE
          - services.env 
-
+         - config.env
 
       ports:
          - "7999:80"
