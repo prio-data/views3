@@ -1,8 +1,38 @@
 version: "3.9"
 services:
-   base-data-retriever:
-      build: base_data_retriever/.
-      image: prioreg.azurecr.io/views-base-data-retriever
+   storefront:
+      build: views_storefront/.
+      image: prioreg.azurecr.io/views-storefront
+
+      env_file:
+         - services.env 
+
+      ports:
+         - "5000:80"
+      networks:
+         - backend
+
+      depends_on:
+         - docs
+         - queryset-manager
+
+   docs:
+      build: views_docs/.
+      image: prioreg.azurecr.io/views-docs
+      environment:
+         BASE_DATA_RETRIEVER_URL: http://base-data-retriever
+         TRANSFORMER_URL: http://data-transformer
+      env_file:
+         - $AUTH_FILE
+         - services.env
+      ports:
+         - "4010:80"
+      networks:
+         - backend
+
+   queryset-manager:
+      build: "views_queryset_manager/."
+      image: prioreg.azurecr.io/views-queryset-manager
 
       env_file:
          - $AUTH_FILE
@@ -10,28 +40,33 @@ services:
          - config.env
 
       ports:
-         - "8003:80"
+         - "4020:80"
+
+      networks:
+         - backend 
+
+      depends_on:
+         - job-manager
+
+   job-manager:
+      build: views_job_manager/.
+      image: prioreg.azurecr.io/views-job-manager
+
+      env_file:
+         - $AUTH_FILE
+         - services.env 
+         - config.env
+
+      ports:
+         - "3010:80"
 
       volumes:
-         - cache-vol:/base_data_retriever/cache
+         - cache-vol:/views_job_manager/cache
       networks:
          - backend 
 
-   data-transformer:
-      build: views_data_transformer/.
-      image: prioreg.azurecr.io/views-data-transformer
-
-      env_file:
-         - $AUTH_FILE
-         - services.env 
-         - config.env
-
-
-      ports:
-         - "8002:80"
-
-      networks:
-         - backend 
+      depends_on:
+         - router
 
    router:
       build: views_router/.
@@ -44,16 +79,20 @@ services:
 
 
       ports:
-         - "8001:80"
+         - "2010:80"
 
       volumes:
          - cache-vol:/views_data_router/cache
       networks:
          - backend 
 
-   job-manager:
-      build: views_job_manager/.
-      image: prioreg.azurecr.io/views-job-manager
+      depends_on:
+         - base-data-retriever
+         - data-transformer
+
+   base-data-retriever:
+      build: base_data_retriever/.
+      image: prioreg.azurecr.io/views-base-data-retriever
 
       env_file:
          - $AUTH_FILE
@@ -61,24 +100,25 @@ services:
          - config.env
 
       ports:
-         - "8000:80"
+         - "2020:80"
 
       volumes:
-         - cache-vol:/views_job_manager/cache
+         - cache-vol:/base_data_retriever/cache
       networks:
-         - backend 
+         - backend
 
-   queryset-manager:
-      build: "views_queryset_manager/."
-      image: prioreg.azurecr.io/views-queryset-manager
+   data-transformer:
+      build: views_data_transformer/.
+      image: prioreg.azurecr.io/views-data-transformer
 
       env_file:
          - $AUTH_FILE
          - services.env 
          - config.env
 
+
       ports:
-         - "7999:80"
+         - "2030:80"
 
       networks:
          - backend 
