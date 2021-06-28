@@ -8,7 +8,7 @@ services:
          - services.env 
 
       ports:
-         - "5000:80"
+         - "4000:80"
       networks:
          - backend
 
@@ -26,7 +26,7 @@ services:
          - $AUTH_FILE
          - services.env
       ports:
-         - "4010:80"
+         - "4001:80"
       networks:
          - backend
 
@@ -40,7 +40,7 @@ services:
          - config.env
 
       ports:
-         - "4020:80"
+         - "4002:80"
 
       networks:
          - backend 
@@ -58,7 +58,7 @@ services:
          - config.env
 
       ports:
-         - "3010:80"
+         - "4003:80"
 
       volumes:
          - cache-vol:/views_job_manager/cache
@@ -79,7 +79,7 @@ services:
 
 
       ports:
-         - "2010:80"
+         - "4004:80"
 
       volumes:
          - cache-vol:/views_data_router/cache
@@ -100,7 +100,7 @@ services:
          - config.env
 
       ports:
-         - "2020:80"
+         - "4005:80"
 
       volumes:
          - cache-vol:/base_data_retriever/cache
@@ -118,7 +118,7 @@ services:
 
 
       ports:
-         - "2030:80"
+         - "4006:80"
 
       networks:
          - backend 
