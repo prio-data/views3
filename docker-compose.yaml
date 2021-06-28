@@ -19,12 +19,17 @@ services:
    docs:
       build: views_docs/.
       image: prioreg.azurecr.io/views-docs
+
       environment:
          BASE_DATA_RETRIEVER_URL: http://base-data-retriever
          TRANSFORMER_URL: http://data-transformer
+         FORWARDED_ALLOW_IPS: "*"
+         SCRIPT_NAME: "/docs"
+
       env_file:
          - $AUTH_FILE
          - services.env
+
       ports:
          - "4001:80"
       networks:
@@ -33,6 +38,10 @@ services:
    queryset-manager:
       build: "views_queryset_manager/."
       image: prioreg.azurecr.io/views-queryset-manager
+
+      environment:
+         FORWARDED_ALLOW_IPS: "*"
+         SCRIPT_NAME: "/docs"
 
       env_file:
          - $AUTH_FILE
