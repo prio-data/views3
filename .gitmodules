@@ -18,7 +18,7 @@
 	url = https://github.com/prio-data/views_job_manager
 [submodule "views_storefront"]
 	path = views_storefront
-	url = git@github.com:prio-data/views_storefront
+	url = https://github.com/prio-data/views_storefront
 [submodule "views_docs"]
 	path = views_docs
-	url = git@github.com:prio-data/views_docs
+	url = https://github.com/prio-data/views_docs
