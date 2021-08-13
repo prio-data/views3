@@ -2,4 +2,5 @@ venv/
 test_data/
 .env
 *.env
+!config.env
 !services.env
