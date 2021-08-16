@@ -18,7 +18,7 @@ services:
 
    docs:
       build: views_docs/.
-      image: viewsregistry.azurecr.io/prio-data/views-docs:1.4.2
+      image: viewsregistry.azurecr.io/prio-data/views_docs:1.4.2
 
       environment:
          BASE_DATA_RETRIEVER_URL: http://base-data-retriever
