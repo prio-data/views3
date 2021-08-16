@@ -2,7 +2,7 @@ version: "3.9"
 services:
    storefront:
       build: views_storefront/.
-      image: viewsregistry.azurecr.io/views-storefront
+      image: viewsregistry.azurecr.io/prio-data/views_storefront:1.0.1
 
       env_file:
          - services.env 
@@ -18,7 +18,7 @@ services:
 
    docs:
       build: views_docs/.
-      image: viewsregistry.azurecr.io/prio-data/views_docs:1.4.2
+      image: viewsregistry.azurecr.io/prio-data/views_docs:1.4.3
 
       environment:
          BASE_DATA_RETRIEVER_URL: http://base-data-retriever
@@ -37,7 +37,7 @@ services:
 
    queryset-manager:
       build: "views_queryset_manager/."
-      image: viewsregistry.azurecr.io/views-queryset-manager
+      image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:1.0.1
 
       environment:
          FORWARDED_ALLOW_IPS: "*"
@@ -59,7 +59,7 @@ services:
 
    job-manager:
       build: views_job_manager/.
-      image: viewsregistry.azurecr.io/views-job-manager
+      image: viewsregistry.azurecr.io/prio-data/views_job_manager:1.0.0
 
       env_file:
          - $AUTH_FILE
@@ -79,7 +79,7 @@ services:
 
    router:
       build: views_router/.
-      image: viewsregistry.azurecr.io/views-router
+      image: viewsregistry.azurecr.io/prio-data/views_router:1.0.0
 
       env_file:
          - $AUTH_FILE
@@ -101,7 +101,7 @@ services:
 
    base-data-retriever:
       build: base_data_retriever/.
-      image: viewsregistry.azurecr.io/base-data-retriever
+      image: viewsregistry.azurecr.io/prio-data/base_data_retriever:1.0.0
 
       env_file:
          - $AUTH_FILE
@@ -118,7 +118,7 @@ services:
 
    data-transformer:
       build: views_data_transformer/.
-      image: viewsregistry.azurecr.io/views-data-transformer
+      image: viewsregistry.azurecr.io/prio-data/views_data_transformer:1.0.0
 
       env_file:
          - $AUTH_FILE
@@ -137,4 +137,4 @@ volumes:
 
 networks:
    backend:
-      name: views-integration
+      name: views_integration
