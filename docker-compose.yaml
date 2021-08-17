@@ -37,7 +37,7 @@ services:
 
    queryset-manager:
       build: "views_queryset_manager/."
-      image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:1.0.1
+      image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:1.1.0
 
       environment:
          FORWARDED_ALLOW_IPS: "*"
