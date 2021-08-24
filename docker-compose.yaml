@@ -59,7 +59,7 @@ services:
 
    job-manager:
       build: views_job_manager/.
-      image: viewsregistry.azurecr.io/prio-data/views_job_manager:1.0.0
+      image: viewsregistry.azurecr.io/prio-data/views_job_manager:1.0.1
 
       env_file:
          - $AUTH_FILE
