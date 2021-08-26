@@ -1,16 +1,9 @@
 version: "3.9"
 services:
 
-   ssl-sidecar:
-      image: prioreg.azurecr.io/prio-data/pg_ssl_sidecar:2.0.0
-      env_file:
-         - $AUTH_FILE
-      volumes:
-         - home-vol:/home_mnt
-
    storefront:
       build: views_storefront/.
-      image: viewsregistry.azurecr.io/prio-data/views_storefront:1.0.1
+      image: viewsregistry.azurecr.io/prio-data/views_storefront:2.0.0
 
       env_file:
          - services.env 
@@ -25,21 +18,32 @@ services:
          - docs
          - queryset-manager
 
+   ssl-sidecar:
+      image: prioreg.azurecr.io/prio-data/pg_ssl_sidecar:2.0.0
+      env_file:
+         - $AUTH_FILE
+      volumes:
+         - ./logs/ssl-sidecar:/var/log/app
+         - home-vol:/home_mnt
+
    docs:
       build: views_docs/.
-      image: viewsregistry.azurecr.io/prio-data/views_docs:1.4.3
+      image: viewsregistry.azurecr.io/prio-data/views_docs:2.0.0
 
-      environment:
-         BASE_DATA_RETRIEVER_URL: http://base-data-retriever
-         TRANSFORMER_URL: http://data-transformer
-         FORWARDED_ALLOW_IPS: "*"
-         SCRIPT_NAME: "/docs"
+         DB_HOST: $DOCS_DB_HOST
+         DB_PORT: $DOCS_DB_PORT
+         DB_NAME: $DOCS_DB_NAME
+         DB_USER: $DOCS_DB_USER
+         DB_SSL: $DB_SSL
+
+         LOG_LEVEL: DEBUG
 
       env_file:
          - $AUTH_FILE
          - services.env
 
       volumes:
+         - ./logs/docs:/var/log/app
          - home-vol:/root
 
       ports:
@@ -53,11 +57,13 @@ services:
    queryset-manager:
 
       build: "views_queryset_manager/."
-      image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:1.1.3
+      image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:2.0.0
 
-      environment:
-         FORWARDED_ALLOW_IPS: "*"
-         SCRIPT_NAME: "/docs"
+         DB_HOST: $QUERYSET_MANAGER_DB_HOST
+         DB_PORT: $QUERYSET_MANAGER_DB_PORT
+         DB_NAME: $QUERYSET_MANAGER_DB_NAME
+         DB_USER: $QUERYSET_MANAGER_DB_USER
+         DB_SSL: $DB_SSL
 
       env_file:
          - $AUTH_FILE
@@ -68,6 +74,7 @@ services:
          - "4002:80"
 
       volumes:
+         - ./logs/queryset-manager:/var/log/app
          - home-vol:/root
 
       networks:
@@ -90,7 +97,9 @@ services:
          - "4003:80"
 
       volumes:
+         - ./logs/job-manager:/var/log/app
          - home-vol:/root
+
       networks:
          - backend 
 
@@ -100,7 +109,7 @@ services:
 
    router:
       build: views_router/.
-      image: viewsregistry.azurecr.io/prio-data/views_router:1.0.0
+      image: viewsregistry.azurecr.io/prio-data/views_router:2.0.0
 
       env_file:
          - $AUTH_FILE
@@ -112,6 +121,7 @@ services:
          - "4004:80"
 
       volumes:
+         - ./logs/router:/var/log/app
          - home-vol:/root
 
       networks:
@@ -131,6 +141,8 @@ services:
          DB_PORT: $BASE_DB_PORT
          DB_NAME: $BASE_DB_NAME
          DB_USER: $BASE_DB_USER
+         DB_SSL: $DB_SSL
+
          DB_SCHEMA: $BASE_DB_SCHEMA
 
       env_file:
@@ -142,6 +154,7 @@ services:
          - "4005:80"
 
       volumes:
+         - ./logs/base-data-retriever:/var/log/app
          - home-vol:/root
 
       networks:
@@ -162,6 +175,9 @@ services:
 
       networks:
          - backend 
+
+      volumes:
+         - ./logs/data-transformer:/var/log/app
 
 volumes:
    home-vol:

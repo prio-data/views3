@@ -4,3 +4,6 @@ test_data/
 *.env
 !config.env
 !services.env
+
+logs/*
+!logs/.gitkeep
