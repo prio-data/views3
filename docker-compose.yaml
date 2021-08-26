@@ -26,6 +26,17 @@ services:
          - ./logs/ssl-sidecar:/var/log/app
          - home-vol:/home_mnt
 
+   data-cache:
+      image: prioreg.azurecr.io/prio-data/restblobs:1.0.0
+      env_file:
+         - $AUTH_FILE
+      environment:
+         CONTAINER_NAME: $CACHE_CONTAINER_NAME 
+      ports:
+         - "4007:80"
+      networks:
+         - backend 
+
    docs:
       build: views_docs/.
       image: viewsregistry.azurecr.io/prio-data/views_docs:2.0.0
@@ -60,6 +71,7 @@ services:
       build: "views_queryset_manager/."
       image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:2.0.0
 
+      environment:
          DB_HOST: $QUERYSET_MANAGER_DB_HOST
          DB_PORT: $QUERYSET_MANAGER_DB_PORT
          DB_NAME: $QUERYSET_MANAGER_DB_NAME
@@ -87,7 +99,7 @@ services:
 
    job-manager:
       build: views_job_manager/.
-      image: viewsregistry.azurecr.io/prio-data/views_job_manager:1.0.1
+      image: viewsregistry.azurecr.io/prio-data/views_job_manager:2.0.0
 
       env_file:
          - $AUTH_FILE
@@ -110,7 +122,7 @@ services:
 
    router:
       build: views_router/.
-      image: viewsregistry.azurecr.io/prio-data/views_router:2.0.0
+      image: viewsregistry.azurecr.io/prio-data/views_router:3.0.0
 
       env_file:
          - $AUTH_FILE
