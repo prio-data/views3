@@ -30,6 +30,7 @@ services:
       build: views_docs/.
       image: viewsregistry.azurecr.io/prio-data/views_docs:2.0.0
 
+      environment:
          DB_HOST: $DOCS_DB_HOST
          DB_PORT: $DOCS_DB_PORT
          DB_NAME: $DOCS_DB_NAME
