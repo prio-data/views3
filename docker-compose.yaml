@@ -19,7 +19,7 @@ services:
          - queryset-manager
 
    ssl-sidecar:
-      image: prioreg.azurecr.io/prio-data/pg_ssl_sidecar:2.0.0
+      image: prioreg.azurecr.io/prio-data/pg_ssl_sidecar:2.0.1
       env_file:
          - $AUTH_FILE
       volumes:
