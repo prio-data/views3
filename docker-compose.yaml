@@ -122,7 +122,7 @@ services:
 
    router:
       build: views_router/.
-      image: viewsregistry.azurecr.io/prio-data/views_router:3.0.0
+      image: viewsregistry.azurecr.io/prio-data/views_router:3.0.1
 
       env_file:
          - $AUTH_FILE
