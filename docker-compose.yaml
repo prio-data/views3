@@ -147,7 +147,7 @@ services:
 
    base-data-retriever:
       build: base_data_retriever/.
-      image: viewsregistry.azurecr.io/prio-data/base_data_retriever:2.0.0
+      image: viewsregistry.azurecr.io/prio-data/base_data_retriever:2.0.1
 
       environment:
          DB_HOST: $BASE_DB_HOST
@@ -175,7 +175,7 @@ services:
 
    data-transformer:
       build: views_data_transformer/.
-      image: viewsregistry.azurecr.io/prio-data/views_data_transformer:1.1.0
+      image: viewsregistry.azurecr.io/prio-data/views_data_transformer:1.1.1
 
       env_file:
          - $AUTH_FILE
