@@ -175,7 +175,7 @@ services:
 
    data-transformer:
       build: views_data_transformer/.
-      image: viewsregistry.azurecr.io/prio-data/views_data_transformer:1.1.1
+      image: viewsregistry.azurecr.io/prio-data/views_data_transformer:1.2.1
 
       env_file:
          - $AUTH_FILE
