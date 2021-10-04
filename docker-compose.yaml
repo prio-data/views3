@@ -17,6 +17,8 @@ services:
          - docs
          - queryset-manager
 
+      restart: always
+
    ssl-sidecar:
       image: prioreg.azurecr.io/prio-data/pg_ssl_sidecar:2.0.1
       env_file:
@@ -35,6 +37,8 @@ services:
          - "4007:80"
       networks:
          - backend 
+
+      restart: always
 
    docs:
       image: viewsregistry.azurecr.io/prio-data/views_docs:2.0.0
@@ -64,9 +68,9 @@ services:
       depends_on:
          - ssl-sidecar
 
-   queryset-manager:
+      restart: always
 
-      build: "views_queryset_manager/."
+   queryset-manager:
       image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:2.0.0
 
       environment:
@@ -95,6 +99,8 @@ services:
          - ssl-sidecar
          - job-manager
 
+      restart: always
+
    job-manager:
       image: viewsregistry.azurecr.io/prio-data/views_job_manager:2.0.0
 
@@ -116,6 +122,8 @@ services:
       depends_on:
          - router
          - ssl-sidecar
+
+      restart: always
 
    router:
       image: viewsregistry.azurecr.io/prio-data/views_router:3.0.1
@@ -140,6 +148,8 @@ services:
          - ssl-sidecar
          - base-data-retriever
          - data-transformer
+
+      restart: always
 
    base-data-retriever:
       image: viewsregistry.azurecr.io/prio-data/base_data_retriever:2.0.1
@@ -168,6 +178,8 @@ services:
       networks:
          - backend
 
+      restart: always
+
    data-transformer:
       image: viewsregistry.azurecr.io/prio-data/views_data_transformer:1.2.1
 
@@ -185,6 +197,8 @@ services:
 
       volumes:
          - ./logs/data-transformer:/var/log/app
+
+      restart: always
 
 volumes:
    home-vol:
