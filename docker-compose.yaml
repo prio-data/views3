@@ -2,7 +2,6 @@ version: "3.9"
 services:
 
    storefront:
-      build: views_storefront/.
       image: viewsregistry.azurecr.io/prio-data/views_storefront:2.0.0
 
       env_file:
@@ -17,6 +16,8 @@ services:
          - ssl-sidecar
          - docs
          - queryset-manager
+
+      restart: always
 
    ssl-sidecar:
       image: prioreg.azurecr.io/prio-data/pg_ssl_sidecar:2.0.1
@@ -37,8 +38,9 @@ services:
       networks:
          - backend 
 
+      restart: always
+
    docs:
-      build: views_docs/.
       image: viewsregistry.azurecr.io/prio-data/views_docs:2.0.0
 
       environment:
@@ -66,9 +68,9 @@ services:
       depends_on:
          - ssl-sidecar
 
-   queryset-manager:
+      restart: always
 
-      build: "views_queryset_manager/."
+   queryset-manager:
       image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:2.0.0
 
       environment:
@@ -97,8 +99,9 @@ services:
          - ssl-sidecar
          - job-manager
 
+      restart: always
+
    job-manager:
-      build: views_job_manager/.
       image: viewsregistry.azurecr.io/prio-data/views_job_manager:2.0.0
 
       env_file:
@@ -120,8 +123,9 @@ services:
          - router
          - ssl-sidecar
 
+      restart: always
+
    router:
-      build: views_router/.
       image: viewsregistry.azurecr.io/prio-data/views_router:3.0.1
 
       env_file:
@@ -145,8 +149,9 @@ services:
          - base-data-retriever
          - data-transformer
 
+      restart: always
+
    base-data-retriever:
-      build: base_data_retriever/.
       image: viewsregistry.azurecr.io/prio-data/base_data_retriever:2.0.1
 
       environment:
@@ -173,9 +178,10 @@ services:
       networks:
          - backend
 
+      restart: always
+
    data-transformer:
-      build: views_data_transformer/.
-      image: viewsregistry.azurecr.io/prio-data/views_data_transformer:1.1.1
+      image: viewsregistry.azurecr.io/prio-data/views_data_transformer:1.2.1
 
       env_file:
          - $AUTH_FILE
@@ -191,6 +197,8 @@ services:
 
       volumes:
          - ./logs/data-transformer:/var/log/app
+
+      restart: always
 
 volumes:
    home-vol:
