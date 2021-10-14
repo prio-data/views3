@@ -28,7 +28,7 @@ services:
          - home-vol:/home_mnt
 
    data-cache:
-      image: prioreg.azurecr.io/prio-data/restblobs:1.0.0
+      image: prioreg.azurecr.io/prio-data/restblobs:1.0.1
       env_file:
          - $AUTH_FILE
       environment:
