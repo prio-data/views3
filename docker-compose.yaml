@@ -152,7 +152,7 @@ services:
       restart: always
 
    base-data-retriever:
-      image: viewsregistry.azurecr.io/prio-data/base_data_retriever:2.0.1
+      image: viewsregistry.azurecr.io/prio-data/base_data_retriever:3.0.0
 
       environment:
          DB_HOST: $BASE_DB_HOST
