@@ -41,7 +41,7 @@ services:
       restart: always
 
    docs:
-      image: viewsregistry.azurecr.io/prio-data/views_docs:2.0.0
+      image: viewsregistry.azurecr.io/prio-data/views_docs:2.1.0
 
       environment:
          DB_HOST: $DOCS_DB_HOST
@@ -71,7 +71,7 @@ services:
       restart: always
 
    queryset-manager:
-      image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:2.0.0
+      image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:2.1.0
 
       environment:
          DB_HOST: $QUERYSET_MANAGER_DB_HOST
@@ -135,7 +135,7 @@ services:
       restart: always
 
    router:
-      image: viewsregistry.azurecr.io/prio-data/views_router:3.0.1
+      image: viewsregistry.azurecr.io/prio-data/views_router:3.1.0
 
       env_file:
          - $AUTH_FILE
@@ -161,7 +161,7 @@ services:
       restart: always
 
    base-data-retriever:
-      image: viewsregistry.azurecr.io/prio-data/base_data_retriever:3.1.0
+      image: viewsregistry.azurecr.io/prio-data/base_data_retriever:3.2.0
 
       environment:
          DB_HOST: $BASE_DB_HOST
