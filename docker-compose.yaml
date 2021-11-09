@@ -118,6 +118,8 @@ services:
       networks:
          - backend
 
+      restart: always
+
    job-manager:
       image: viewsregistry.azurecr.io/prio-data/views_job_manager:3.0.1
 
