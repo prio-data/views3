@@ -1,15 +1,17 @@
 version: "3.9"
 services:
+   log_aggregator: 
+      image: peder2911/logagg:1.0.0
+      ports: 
+         - "4008:80"
+      volumes:
+         - ./logs:/var/log/services
 
    storefront:
       image: viewsregistry.azurecr.io/prio-data/views_storefront:2.0.0
 
       env_file:
          - services.env 
-
-      environment:
-         LOG_LEVEL: $LOG_LEVEL 
-         ERROR_LOG_FILE: "-"
 
       ports:
          - "4000:80"
@@ -29,7 +31,6 @@ services:
          - $AUTH_FILE
       environment:
          LOG_LEVEL: $LOG_LEVEL 
-         ERROR_LOG_FILE: "-"
       volumes:
          - ./logs/ssl-sidecar:/var/log/app
          - home-vol:/home_mnt
@@ -41,7 +42,8 @@ services:
       environment:
          CONTAINER_NAME: $CACHE_CONTAINER_NAME 
          LOG_LEVEL: $LOG_LEVEL 
-         ERROR_LOG_FILE: "-"
+         ACCESS_LOG_FILE: "/var/log/app/cache_access.log"
+         ERROR_LOG_FILE: "/var/log/app/cache_error.log"
       ports:
          - "4007:80"
       networks:
@@ -60,14 +62,15 @@ services:
          DB_SSL: $DB_SSL
 
          LOG_LEVEL: $LOG_LEVEL 
-         ERROR_LOG_FILE: "-"
+         ACCESS_LOG_FILE: "/var/log/app/docs_access.log"
+         ERROR_LOG_FILE: "/var/log/app/docs_error.log"
 
       env_file:
          - $AUTH_FILE
          - services.env
 
       volumes:
-         - ./logs/docs:/var/log/app
+         - ./logs:/var/log/app
          - home-vol:/root
 
       ports:
@@ -90,7 +93,8 @@ services:
          DB_USER: $QUERYSET_MANAGER_DB_USER
          DB_SSL: $DB_SSL
          LOG_LEVEL: $LOG_LEVEL 
-         ERROR_LOG_FILE: "-"
+         ACCESS_LOG_FILE: "/var/log/app/queryset_manager_access.log"
+         ERROR_LOG_FILE: "/var/log/app/queryset_manager_error.log"
 
       env_file:
          - $AUTH_FILE
@@ -101,7 +105,7 @@ services:
          - "4002:80"
 
       volumes:
-         - ./logs/queryset-manager:/var/log/app
+         - ./logs:/var/log/app
          - home-vol:/root
 
       networks:
@@ -124,8 +128,9 @@ services:
       image: viewsregistry.azurecr.io/prio-data/views_job_manager:3.0.1
 
       environment:
-        LOG_LEVEL: $LOG_LEVEL 
-        ERROR_LOG_FILE: "-"
+         LOG_LEVEL: $LOG_LEVEL 
+         ACCESS_LOG_FILE: "/var/log/app/job_manager_access.log"
+         ERROR_LOG_FILE: "/var/log/app/job_manager_error.log"
         
      
 
@@ -138,7 +143,7 @@ services:
          - "4003:80"
 
       volumes:
-         - ./logs/job-manager:/var/log/app
+         - ./logs:/var/log/app
          - home-vol:/root
 
       networks:
@@ -161,14 +166,15 @@ services:
 
       environment:
          LOG_LEVEL: $LOG_LEVEL 
-         ERROR_LOG_FILE: "-"
+         ACCESS_LOG_FILE: "/var/log/app/router_access.log"
+         ERROR_LOG_FILE: "/var/log/app/router_error.log"
 
 
       ports:
          - "4004:80"
 
       volumes:
-         - ./logs/router:/var/log/app
+         - ./logs:/var/log/app
          - home-vol:/root
 
       networks:
@@ -193,7 +199,8 @@ services:
 
          DB_SCHEMA: $BASE_DB_SCHEMA
          LOG_LEVEL: $LOG_LEVEL 
-         ERROR_LOG_FILE: "-"
+         ACCESS_LOG_FILE: "/var/log/app/base_data_retriever_access.log"
+         ERROR_LOG_FILE: "/var/log/app/base_data_retriever_error.log"
 
       env_file:
          - $AUTH_FILE
@@ -204,7 +211,7 @@ services:
          - "4005:80"
 
       volumes:
-         - ./logs/base-data-retriever:/var/log/app
+         - ./logs:/var/log/app
          - home-vol:/root
 
       networks:
@@ -217,7 +224,8 @@ services:
 
       environment:
          LOG_LEVEL: $LOG_LEVEL 
-         ERROR_LOG_FILE: "-"
+         ACCESS_LOG_FILE: "/var/log/app/data_transformer_access.log"
+         ERROR_LOG_FILE: "/var/log/app/data_transformer_error.log"
 
       env_file:
          - $AUTH_FILE
@@ -232,7 +240,7 @@ services:
          - backend 
 
       volumes:
-         - ./logs/data-transformer:/var/log/app
+         - ./logs:/var/log/app
 
       restart: always
 
