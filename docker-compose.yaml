@@ -44,6 +44,8 @@ services:
          LOG_LEVEL: $LOG_LEVEL 
          ACCESS_LOG_FILE: "/var/log/app/cache_access.log"
          ERROR_LOG_FILE: "/var/log/app/cache_error.log"
+         CAPTURE_OUTPUT: "True"
+
       ports:
          - "4007:80"
       networks:
@@ -64,6 +66,7 @@ services:
          LOG_LEVEL: $LOG_LEVEL 
          ACCESS_LOG_FILE: "/var/log/app/docs_access.log"
          ERROR_LOG_FILE: "/var/log/app/docs_error.log"
+         CAPTURE_OUTPUT: "True"
 
       env_file:
          - $AUTH_FILE
@@ -95,6 +98,7 @@ services:
          LOG_LEVEL: $LOG_LEVEL 
          ACCESS_LOG_FILE: "/var/log/app/queryset_manager_access.log"
          ERROR_LOG_FILE: "/var/log/app/queryset_manager_error.log"
+         CAPTURE_OUTPUT: "True"
 
       env_file:
          - $AUTH_FILE
@@ -131,6 +135,7 @@ services:
          LOG_LEVEL: $LOG_LEVEL 
          ACCESS_LOG_FILE: "/var/log/app/job_manager_access.log"
          ERROR_LOG_FILE: "/var/log/app/job_manager_error.log"
+         CAPTURE_OUTPUT: "True"
         
      
 
@@ -168,6 +173,7 @@ services:
          LOG_LEVEL: $LOG_LEVEL 
          ACCESS_LOG_FILE: "/var/log/app/router_access.log"
          ERROR_LOG_FILE: "/var/log/app/router_error.log"
+         CAPTURE_OUTPUT: "True"
 
 
       ports:
@@ -201,6 +207,7 @@ services:
          LOG_LEVEL: $LOG_LEVEL 
          ACCESS_LOG_FILE: "/var/log/app/base_data_retriever_access.log"
          ERROR_LOG_FILE: "/var/log/app/base_data_retriever_error.log"
+         CAPTURE_OUTPUT: "True"
 
       env_file:
          - $AUTH_FILE
@@ -226,6 +233,7 @@ services:
          LOG_LEVEL: $LOG_LEVEL 
          ACCESS_LOG_FILE: "/var/log/app/data_transformer_access.log"
          ERROR_LOG_FILE: "/var/log/app/data_transformer_error.log"
+         CAPTURE_OUTPUT: "True"
 
       env_file:
          - $AUTH_FILE
