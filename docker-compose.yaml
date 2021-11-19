@@ -37,8 +37,10 @@ services:
 
    data-cache:
       image: prioreg.azurecr.io/prio-data/restblobs:1.1.0
+
       env_file:
          - $AUTH_FILE
+
       environment:
          CONTAINER_NAME: $CACHE_CONTAINER_NAME 
          LOG_LEVEL: $LOG_LEVEL 
@@ -46,8 +48,12 @@ services:
          ERROR_LOG_FILE: "/var/log/app/cache_error.log"
          CAPTURE_OUTPUT: "True"
 
+      volumes:
+         - ./logs:/var/log/app
+
       ports:
          - "4007:80"
+
       networks:
          - backend 
 
