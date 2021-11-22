@@ -93,14 +93,14 @@ services:
       restart: always
 
    queryset-manager:
-      image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:2.1.1
+      image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:3.0.0
 
       environment:
-         DB_HOST: $QUERYSET_MANAGER_DB_HOST
-         DB_PORT: $QUERYSET_MANAGER_DB_PORT
-         DB_NAME: $QUERYSET_MANAGER_DB_NAME
-         DB_USER: $QUERYSET_MANAGER_DB_USER
-         DB_SSL: $DB_SSL
+         QUERYSET_MANAGER_DB_HOST: $QUERYSET_MANAGER_DB_HOST
+         QUERYSET_MANAGER_DB_PORT: $QUERYSET_MANAGER_DB_PORT
+         QUERYSET_MANAGER_DB_NAME: $QUERYSET_MANAGER_DB_NAME
+         QUERYSET_MANAGER_DB_USER: $QUERYSET_MANAGER_DB_USER
+         QUERYSET_MANAGER_DB_SSL: $QUERYSET_MANAGER_DB_SSL
          LOG_LEVEL: $LOG_LEVEL 
          ACCESS_LOG_FILE: "/var/log/app/queryset_manager_access.log"
          ERROR_LOG_FILE: "/var/log/app/queryset_manager_error.log"
