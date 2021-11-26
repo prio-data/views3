@@ -200,25 +200,21 @@ services:
       restart: always
 
    base-data-retriever:
-      image: viewsregistry.azurecr.io/prio-data/base_data_retriever:3.2.0
+      image: viewsregistry.azurecr.io/prio-data/base_data_retriever:4.0.0
 
       environment:
-         DB_HOST: $BASE_DB_HOST
-         DB_PORT: $BASE_DB_PORT
-         DB_NAME: $BASE_DB_NAME
-         DB_USER: $BASE_DB_USER
-         DB_SSL: $DB_SSL
+         BASE_DATA_RETRIEVER_DB_HOST:     $BASE_DATA_RETRIEVER_DB_HOST
+         BASE_DATA_RETRIEVER_DB_PORT:     $BASE_DATA_RETRIEVER_DB_PORT
+         BASE_DATA_RETRIEVER_DB_NAME:     $BASE_DATA_RETRIEVER_DB_NAME
+         BASE_DATA_RETRIEVER_DB_USER:     $BASE_DATA_RETRIEVER_DB_USER
+         BASE_DATA_RETRIEVER_DB_SCHEMA:   $BASE_DATA_RETRIEVER_DB_SCHEMA
+         BASE_DATA_RETRIEVER_DB_SSLMODE:  $BASE_DATA_RETRIEVER_DB_SSL
+         BASE_DATA_RETRIEVER_LOA_DB_NAME: $BASE_DATA_RETRIEVER_LOA_DB_NAME
 
-         DB_SCHEMA: $BASE_DB_SCHEMA
-         LOG_LEVEL: $LOG_LEVEL 
+         LOG_LEVEL:       $LOG_LEVEL
          ACCESS_LOG_FILE: "/var/log/app/base_data_retriever_access.log"
-         ERROR_LOG_FILE: "/var/log/app/base_data_retriever_error.log"
-         CAPTURE_OUTPUT: "True"
-
-      env_file:
-         - $AUTH_FILE
-         - services.env 
-         - config.env
+         ERROR_LOG_FILE:  "/var/log/app/base_data_retriever_error.log"
+         CAPTURE_OUTPUT:  "True"
 
       ports:
          - "4005:80"
