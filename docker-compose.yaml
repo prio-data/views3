@@ -1,11 +1,32 @@
 version: "3.9"
 services:
+   seclevel-fixer:
+      image: alpine/openssl 
+      entrypoint:  ["sed", "-i", "s/SECLEVEL=[0-9]/SECLEVEL=1/g", "/etc/ssl/openssl.cnf"]
+      volumes:
+         - openssl-conf:/etc/ssl/
+
    log_aggregator: 
       image: peder2911/logagg:1.0.0
       ports: 
-         - "4008:80"
+         - "4008:8080"
       volumes:
          - ./logs:/var/log/services
+
+   ssl-sidecar:
+      image: prioreg.azurecr.io/prio-data/pg_ssl_sidecar:2.0.1
+
+      env_file:
+         - $AUTH_FILE
+
+      environment:
+         LOG_LEVEL: $LOG_LEVEL 
+         POSTGRES_CERT_USER: 1005 
+
+      volumes:
+         - ./logs/ssl-sidecar:/var/log/app
+         - home-vol:/home_mnt
+         - certs:/home_mnt/.postgresql
 
    storefront:
       image: viewsregistry.azurecr.io/prio-data/views_storefront:2.0.0
@@ -25,34 +46,22 @@ services:
 
       restart: always
 
-   ssl-sidecar:
-      image: prioreg.azurecr.io/prio-data/pg_ssl_sidecar:2.0.1
-      env_file:
-         - $AUTH_FILE
-      environment:
-         LOG_LEVEL: $LOG_LEVEL 
-      volumes:
-         - ./logs/ssl-sidecar:/var/log/app
-         - home-vol:/home_mnt
-
    data-cache:
-      image: prioreg.azurecr.io/prio-data/restblobs:1.1.0
-
-      env_file:
-         - $AUTH_FILE
+      image: prioreg.azurecr.io/prio-data/restblobs:2.0.0
 
       environment:
-         CONTAINER_NAME: $CACHE_CONTAINER_NAME 
-         LOG_LEVEL: $LOG_LEVEL 
-         ACCESS_LOG_FILE: "/var/log/app/cache_access.log"
-         ERROR_LOG_FILE: "/var/log/app/cache_error.log"
-         CAPTURE_OUTPUT: "True"
+         CONTAINER_NAME: $CACHE_CONTAINER_NAME
+         LOG_LEVEL:      $LOG_LEVEL
+
+      env_file:
+         - gunicorn_config.env
+         - auth.env
 
       volumes:
-         - ./logs:/var/log/app
+         - ./logs:/home/gunicorn/log
 
       ports:
-         - "4007:80"
+         - "4007:8080"
 
       networks:
          - backend 
@@ -60,7 +69,7 @@ services:
       restart: always
 
    docs:
-      image: viewsregistry.azurecr.io/prio-data/views_docs:2.1.0
+      image: viewsregistry.azurecr.io/prio-data/views_docs:3.0.0
 
       environment:
          DB_HOST: $DOCS_DB_HOST
@@ -70,30 +79,30 @@ services:
          DB_SSL: $DB_SSL
 
          LOG_LEVEL: $LOG_LEVEL 
-         ACCESS_LOG_FILE: "/var/log/app/docs_access.log"
-         ERROR_LOG_FILE: "/var/log/app/docs_error.log"
-         CAPTURE_OUTPUT: "True"
 
       env_file:
-         - $AUTH_FILE
+         - gunicorn_config.env
          - services.env
+         - $AUTH_FILE
 
       volumes:
          - ./logs:/var/log/app
-         - home-vol:/root
+         - openssl-conf:/etc/ssl/
+         - certs:/home/gunicorn/.postgresql
 
       ports:
-         - "4001:80"
+         - "4001:8080"
       networks:
          - backend
 
       depends_on:
          - ssl-sidecar
+         - seclevel-fixer
 
       restart: always
 
    queryset-manager:
-      image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:3.0.0
+      image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:4.0.0
 
       environment:
          QUERYSET_MANAGER_DB_HOST: $QUERYSET_MANAGER_DB_HOST
@@ -101,28 +110,28 @@ services:
          QUERYSET_MANAGER_DB_NAME: $QUERYSET_MANAGER_DB_NAME
          QUERYSET_MANAGER_DB_USER: $QUERYSET_MANAGER_DB_USER
          QUERYSET_MANAGER_DB_SSL: $QUERYSET_MANAGER_DB_SSL
+
          LOG_LEVEL: $LOG_LEVEL 
-         ACCESS_LOG_FILE: "/var/log/app/queryset_manager_access.log"
-         ERROR_LOG_FILE: "/var/log/app/queryset_manager_error.log"
-         CAPTURE_OUTPUT: "True"
 
       env_file:
-         - $AUTH_FILE
+         - gunicorn_config.env
          - services.env 
          - config.env
 
       ports:
-         - "4002:80"
+         - "4002:8080"
 
       volumes:
          - ./logs:/var/log/app
-         - home-vol:/root
+         - openssl-conf:/etc/ssl/
+         - certs:/home/gunicorn/.postgresql
 
       networks:
          - backend 
 
       depends_on:
          - ssl-sidecar
+         - seclevel-fixer
          - job-manager
 
       restart: always
@@ -135,23 +144,18 @@ services:
       restart: always
 
    job-manager:
-      image: viewsregistry.azurecr.io/prio-data/views_job_manager:3.0.1
+      image: viewsregistry.azurecr.io/prio-data/views_job_manager:4.0.0
 
       environment:
          LOG_LEVEL: $LOG_LEVEL 
-         ACCESS_LOG_FILE: "/var/log/app/job_manager_access.log"
-         ERROR_LOG_FILE: "/var/log/app/job_manager_error.log"
-         CAPTURE_OUTPUT: "True"
-        
-     
 
       env_file:
-         - $AUTH_FILE
+         - gunicorn_config.env
          - services.env 
          - config.env
 
       ports:
-         - "4003:80"
+         - "4003:8080"
 
       volumes:
          - ./logs:/var/log/app
@@ -168,22 +172,18 @@ services:
       restart: always
 
    router:
-      image: viewsregistry.azurecr.io/prio-data/views_router:3.1.0
-
-      env_file:
-         - $AUTH_FILE
-         - services.env 
-         - config.env
+      image: viewsregistry.azurecr.io/prio-data/views_router:4.0.0
 
       environment:
          LOG_LEVEL: $LOG_LEVEL 
-         ACCESS_LOG_FILE: "/var/log/app/router_access.log"
-         ERROR_LOG_FILE: "/var/log/app/router_error.log"
-         CAPTURE_OUTPUT: "True"
 
+      env_file:
+         - gunicorn_config.env
+         - services.env 
+         - config.env
 
       ports:
-         - "4004:80"
+         - "4004:8080"
 
       volumes:
          - ./logs:/var/log/app
@@ -193,14 +193,13 @@ services:
          - backend 
 
       depends_on:
-         - ssl-sidecar
          - base-data-retriever
          - data-transformer
 
       restart: always
 
    base-data-retriever:
-      image: viewsregistry.azurecr.io/prio-data/base_data_retriever:4.0.0
+      image: viewsregistry.azurecr.io/prio-data/base_data_retriever:5.0.0
 
       environment:
          BASE_DATA_RETRIEVER_DB_HOST:     $BASE_DATA_RETRIEVER_DB_HOST
@@ -211,51 +210,59 @@ services:
          BASE_DATA_RETRIEVER_DB_SSLMODE:  $BASE_DATA_RETRIEVER_DB_SSL
          BASE_DATA_RETRIEVER_LOA_DB_NAME: $BASE_DATA_RETRIEVER_LOA_DB_NAME
 
-         LOG_LEVEL:       $LOG_LEVEL
-         ACCESS_LOG_FILE: "/var/log/app/base_data_retriever_access.log"
-         ERROR_LOG_FILE:  "/var/log/app/base_data_retriever_error.log"
-         CAPTURE_OUTPUT:  "True"
+         LOG_LEVEL:          $LOG_LEVEL
+
+      env_file:
+         gunicorn_config.env
 
       ports:
-         - "4005:80"
+         - "4005:8080"
 
       volumes:
-         - ./logs:/var/log/app
-         - home-vol:/root
+         - ./logs:/home/gunicorn/log
+         - certs:/home/gunicorn/.postgresql
+         - openssl-conf:/etc/ssl/
 
       networks:
          - backend
 
+      depends_on:
+         - ssl-sidecar
+         - seclevel-fixer
+
       restart: always
 
    data-transformer:
-      image: viewsregistry.azurecr.io/prio-data/views_data_transformer:1.3.1
+      image: viewsregistry.azurecr.io/prio-data/views_data_transformer:2.0.0
 
       environment:
          LOG_LEVEL: $LOG_LEVEL 
-         ACCESS_LOG_FILE: "/var/log/app/data_transformer_access.log"
-         ERROR_LOG_FILE: "/var/log/app/data_transformer_error.log"
-         CAPTURE_OUTPUT: "True"
 
       env_file:
-         - $AUTH_FILE
          - services.env 
-         - config.env
-
+         - gunicorn_config.env
 
       ports:
-         - "4006:80"
+         - "4006:8080"
 
       networks:
          - backend 
 
       volumes:
-         - ./logs:/var/log/app
+         - ./logs:/home/gunicorn/log
+         - certs:/home/gunicorn/.postgresql
+         - openssl-conf:/etc/ssl/
+
+      depends_on:
+         - ssl-sidecar
+         - seclevel-fixer
 
       restart: always
 
 volumes:
    home-vol:
+   certs:
+   openssl-conf:
 
 networks:
    backend:
