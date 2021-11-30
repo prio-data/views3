@@ -14,7 +14,7 @@ services:
          - ./logs:/var/log/services
 
    ssl-sidecar:
-      image: prioreg.azurecr.io/prio-data/pg_ssl_sidecar:2.0.1
+      image: prioreg.azurecr.io/prio-data/pg_ssl_sidecar:2.1.0
 
       env_file:
          - $AUTH_FILE
