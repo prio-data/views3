@@ -24,7 +24,6 @@ services:
          POSTGRES_CERT_USER: 1005 
 
       volumes:
-         - ./logs/ssl-sidecar:/var/log/app
          - home-vol:/home_mnt
          - certs:/home_mnt/.postgresql
 
@@ -86,7 +85,7 @@ services:
          - $AUTH_FILE
 
       volumes:
-         - ./logs:/var/log/app
+         - ./logs:/home/gunicorn/log
          - openssl-conf:/etc/ssl/
          - certs:/home/gunicorn/.postgresql
 
@@ -122,7 +121,7 @@ services:
          - "4002:8080"
 
       volumes:
-         - ./logs:/var/log/app
+         - ./logs:/home/gunicorn/log
          - openssl-conf:/etc/ssl/
          - certs:/home/gunicorn/.postgresql
 
@@ -158,7 +157,7 @@ services:
          - "4003:8080"
 
       volumes:
-         - ./logs:/var/log/app
+         - ./logs:/home/gunicorn/log
          - home-vol:/root
 
       networks:
@@ -186,7 +185,7 @@ services:
          - "4004:8080"
 
       volumes:
-         - ./logs:/var/log/app
+         - ./logs:/home/gunicorn/log
          - home-vol:/root
 
       networks:
