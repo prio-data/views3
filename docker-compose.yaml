@@ -143,7 +143,7 @@ services:
       restart: always
 
    job-manager:
-      image: viewsregistry.azurecr.io/prio-data/views_job_manager:4.1.0
+      image: viewsregistry.azurecr.io/prio-data/views_job_manager:4.1.1
 
       environment:
          LOG_LEVEL: $LOG_LEVEL 
