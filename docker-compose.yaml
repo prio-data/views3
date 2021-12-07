@@ -178,7 +178,9 @@ services:
       image: viewsregistry.azurecr.io/prio-data/views_router:4.1.0
 
       environment:
-         LOG_LEVEL: $LOG_LEVEL 
+         LOG_LEVEL: $LOG_LEVEL
+
+         GUNICORN_WORKERS: $WORKERS_HEAVY
 
       env_file:
          - gunicorn_config.env
@@ -215,8 +217,9 @@ services:
          BASE_DATA_RETRIEVER_DB_SSLMODE:  $BASE_DATA_RETRIEVER_DB_SSL
          BASE_DATA_RETRIEVER_LOA_DB_NAME: $BASE_DATA_RETRIEVER_LOA_DB_NAME
 
-
          LOG_LEVEL:          $LOG_LEVEL
+
+         GUNICORN_WORKERS: $WORKERS_HEAVY
 
       env_file:
          gunicorn_config.env
@@ -242,7 +245,9 @@ services:
       image: viewsregistry.azurecr.io/prio-data/views_data_transformer:2.1.0
 
       environment:
-         LOG_LEVEL: $LOG_LEVEL 
+         LOG_LEVEL: $LOG_LEVEL
+
+         GUNICORN_WORKERS: $WORKERS_HEAVY
 
       env_file:
          - services.env
