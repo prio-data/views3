@@ -1,14 +1,14 @@
 version: "3.9"
 services:
    seclevel-fixer:
-      image: alpine/openssl 
+      image: alpine/openssl
       entrypoint:  ["sed", "-i", "s/SECLEVEL=[0-9]/SECLEVEL=1/g", "/etc/ssl/openssl.cnf"]
       volumes:
          - openssl-conf:/etc/ssl/
 
-   log_aggregator: 
+   log_aggregator:
       image: peder2911/logagg:1.0.0
-      ports: 
+      ports:
          - "4008:8080"
       volumes:
          - ./logs:/var/log/services
@@ -20,8 +20,8 @@ services:
          - $AUTH_FILE
 
       environment:
-         LOG_LEVEL: $LOG_LEVEL 
-         POSTGRES_CERT_USER: 1005 
+         LOG_LEVEL: $LOG_LEVEL
+         POSTGRES_CERT_USER: 1005
 
       volumes:
          - home-vol:/home_mnt
@@ -31,7 +31,7 @@ services:
       image: viewsregistry.azurecr.io/prio-data/views_storefront:2.0.0
 
       env_file:
-         - services.env 
+         - services.env
 
       ports:
          - "4000:80"
@@ -63,7 +63,7 @@ services:
          - "4007:8080"
 
       networks:
-         - backend 
+         - backend
 
       restart: always
 
@@ -77,7 +77,7 @@ services:
          DOCS_DB_USER: $DOCS_DB_USER
          DOCS_DB_SSL: $DB_SSL
 
-         LOG_LEVEL: $LOG_LEVEL 
+         LOG_LEVEL: $LOG_LEVEL
 
       env_file:
          - gunicorn_config.env
@@ -110,11 +110,11 @@ services:
          QUERYSET_MANAGER_DB_USER: $QUERYSET_MANAGER_DB_USER
          QUERYSET_MANAGER_DB_SSL: $QUERYSET_MANAGER_DB_SSL
 
-         LOG_LEVEL: $LOG_LEVEL 
+         LOG_LEVEL: $LOG_LEVEL
 
       env_file:
          - gunicorn_config.env
-         - services.env 
+         - services.env
          - config.env
 
       ports:
@@ -126,7 +126,7 @@ services:
          - certs:/home/gunicorn/.postgresql
 
       networks:
-         - backend 
+         - backend
 
       depends_on:
          - ssl-sidecar
@@ -150,7 +150,7 @@ services:
 
       env_file:
          - gunicorn_config.env
-         - services.env 
+         - services.env
          - config.env
 
       ports:
@@ -161,7 +161,7 @@ services:
          - home-vol:/root
 
       networks:
-         - backend 
+         - backend
 
       depends_on:
          - router
@@ -178,7 +178,7 @@ services:
 
       env_file:
          - gunicorn_config.env
-         - services.env 
+         - services.env
          - config.env
 
       ports:
@@ -189,7 +189,7 @@ services:
          - home-vol:/root
 
       networks:
-         - backend 
+         - backend
 
       depends_on:
          - base-data-retriever
@@ -201,7 +201,7 @@ services:
       image: viewsregistry.azurecr.io/prio-data/base_data_retriever:5.2.0
 
       environment:
-         BASE_DATA_RETRIEVER_OUTER_JOINS: "True" 
+         BASE_DATA_RETRIEVER_OUTER_JOINS: "True"
 
          BASE_DATA_RETRIEVER_DB_HOST:     $BASE_DATA_RETRIEVER_DB_HOST
          BASE_DATA_RETRIEVER_DB_PORT:     $BASE_DATA_RETRIEVER_DB_PORT
@@ -241,14 +241,14 @@ services:
          LOG_LEVEL: $LOG_LEVEL 
 
       env_file:
-         - services.env 
+         - services.env
          - gunicorn_config.env
 
       ports:
          - "4006:8080"
 
       networks:
-         - backend 
+         - backend
 
       volumes:
          - ./logs:/home/gunicorn/log
