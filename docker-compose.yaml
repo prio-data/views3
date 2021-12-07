@@ -202,7 +202,7 @@ services:
       restart: always
 
    base-data-retriever:
-      image: viewsregistry.azurecr.io/prio-data/base_data_retriever:5.2.0
+      image: viewsregistry.azurecr.io/prio-data/base_data_retriever:5.3.0
 
       environment:
          BASE_DATA_RETRIEVER_OUTER_JOINS: "True"
