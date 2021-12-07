@@ -46,18 +46,18 @@ services:
       restart: always
 
    data-cache:
-      image: prioreg.azurecr.io/prio-data/restblobs:2.1.0
+      image: peder2911/restfiles:1.0.0
 
       environment:
-         CONTAINER_NAME: $CACHE_CONTAINER_NAME
          LOG_LEVEL:      $LOG_LEVEL
+         GUNICORN_WORKERS: $WORKERS_HEAVY
 
       env_file:
          - gunicorn_config.env
-         - auth.env
 
       volumes:
          - ./logs:/home/gunicorn/log
+         - ./cache:/home/gunicorn/cache
 
       ports:
          - "4007:8080"
