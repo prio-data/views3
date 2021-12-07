@@ -143,10 +143,14 @@ services:
       restart: always
 
    job-manager:
-      image: viewsregistry.azurecr.io/prio-data/views_job_manager:4.1.1
+      image: viewsregistry.azurecr.io/prio-data/views_job_manager:4.2.4
 
       environment:
-         LOG_LEVEL: $LOG_LEVEL 
+         LOG_LEVEL: $LOG_LEVEL
+         MAX_RETRIES: $JOB_MANAGER_MAX_RETRIES
+         RETRY_SLEEP: $JOB_MANAGER_RETRY_SLEEP
+
+         GUNICORN_WORKERS: $WORKERS_HEAVY
 
       env_file:
          - gunicorn_config.env
