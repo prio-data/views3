@@ -46,7 +46,7 @@ services:
       restart: always
 
    data-cache:
-      image: peder2911/restfiles:1.0.0
+      image: peder2911/restfiles:2.0.0
 
       environment:
          LOG_LEVEL:      $LOG_LEVEL
@@ -101,7 +101,7 @@ services:
       restart: always
 
    queryset-manager:
-      image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:4.1.0
+      image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:4.1.1
 
       environment:
          QUERYSET_MANAGER_DB_HOST: $QUERYSET_MANAGER_DB_HOST
