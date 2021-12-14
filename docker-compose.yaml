@@ -46,7 +46,7 @@ services:
       restart: always
 
    data-cache:
-      image: peder2911/restfiles:2.0.0
+      image: peder2911/restfiles:2.0.1
 
       environment:
          LOG_LEVEL:      $LOG_LEVEL
