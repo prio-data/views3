@@ -252,6 +252,8 @@ services:
       env_file:
          - services.env
          - gunicorn_config.env
+      extra_hosts:
+         - 'hermes:$HERMES_IP'
 
       ports:
          - "4006:8080"
