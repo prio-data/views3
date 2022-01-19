@@ -6,6 +6,13 @@ services:
       volumes:
          - openssl-conf:/etc/ssl/
 
+   certificate-permissions:
+     image: bash:5.1.16 
+     entrypoint: ["bash", "-c", "cp /mnt/certs/* /mnt/fixed && chown -R 1005:1005 /mnt/fixed"]
+     volumes:
+        - ~/.postgresql:/mnt/certs:ro
+        - certs:/mnt/fixed:rw
+
    log_aggregator:
       image: peder2911/logagg:1.0.0
       ports:
@@ -13,22 +20,8 @@ services:
       volumes:
          - ./logs:/var/log/services
 
-   ssl-sidecar:
-      image: prioreg.azurecr.io/prio-data/pg_ssl_sidecar:2.1.0
-
-      env_file:
-         - $AUTH_FILE
-
-      environment:
-         LOG_LEVEL: $LOG_LEVEL
-         POSTGRES_CERT_USER: 1005
-
-      volumes:
-         - home-vol:/home_mnt
-         - certs:/home_mnt/.postgresql
-
    storefront:
-      image: viewsregistry.azurecr.io/prio-data/views_storefront:2.0.0
+      image: views3/storefront:2.0.1
 
       env_file:
          - services.env
@@ -39,7 +32,7 @@ services:
          - backend
 
       depends_on:
-         - ssl-sidecar
+         - certificate-permissions
          - docs
          - queryset-manager
 
@@ -68,7 +61,7 @@ services:
       restart: always
 
    docs:
-      image: viewsregistry.azurecr.io/prio-data/views_docs:4.0.0
+      image: views3/docs:4.0.1
 
       environment:
          DOCS_DB_HOST: $DOCS_DB_HOST
@@ -82,12 +75,11 @@ services:
       env_file:
          - gunicorn_config.env
          - services.env
-         - $AUTH_FILE
 
       volumes:
          - ./logs:/home/gunicorn/log
          - openssl-conf:/etc/ssl/
-         - certs:/home/gunicorn/.postgresql
+         - certs:/home/gunicorn/.postgresql:ro
 
       ports:
          - "4001:8080"
@@ -95,13 +87,13 @@ services:
          - backend
 
       depends_on:
-         - ssl-sidecar
+         - certificate-permissions
          - seclevel-fixer
 
       restart: always
 
    queryset-manager:
-      image: viewsregistry.azurecr.io/prio-data/views_queryset_manager:4.1.1
+      image: views3/queryset-manager:4.2.0
 
       environment:
          QUERYSET_MANAGER_DB_HOST: $QUERYSET_MANAGER_DB_HOST
@@ -123,13 +115,13 @@ services:
       volumes:
          - ./logs:/home/gunicorn/log
          - openssl-conf:/etc/ssl/
-         - certs:/home/gunicorn/.postgresql
+         - certs:/home/gunicorn/.postgresql:ro
 
       networks:
          - backend
 
       depends_on:
-         - ssl-sidecar
+         - certificate-permissions
          - seclevel-fixer
          - job-manager
 
@@ -143,7 +135,7 @@ services:
       restart: always
 
    job-manager:
-      image: viewsregistry.azurecr.io/prio-data/views_job_manager:4.2.4
+      image: views3/job-manager:4.2.5
 
       environment:
          LOG_LEVEL: $LOG_LEVEL
@@ -162,20 +154,19 @@ services:
 
       volumes:
          - ./logs:/home/gunicorn/log
-         - home-vol:/root
 
       networks:
          - backend
 
       depends_on:
+         - certificate-permissions
          - router
-         - ssl-sidecar
          - jobman-redis
 
       restart: always
 
    router:
-      image: viewsregistry.azurecr.io/prio-data/views_router:4.1.0
+      image: views3/router:4.1.1
 
       environment:
          LOG_LEVEL: $LOG_LEVEL
@@ -192,19 +183,19 @@ services:
 
       volumes:
          - ./logs:/home/gunicorn/log
-         - home-vol:/root
 
       networks:
          - backend
 
       depends_on:
+         - certificate-permissions
          - base-data-retriever
          - data-transformer
 
       restart: always
 
    base-data-retriever:
-      image: viewsregistry.azurecr.io/prio-data/base_data_retriever:5.3.2
+      image: views3/base-data-retriever:5.3.3
 
       environment:
          BASE_DATA_RETRIEVER_OUTER_JOINS: "True"
@@ -229,21 +220,20 @@ services:
 
       volumes:
          - ./logs:/home/gunicorn/log
-         - certs:/home/gunicorn/.postgresql
+         - certs:/home/gunicorn/.postgresql:ro
          - openssl-conf:/etc/ssl/
 
       networks:
          - backend
 
       depends_on:
-         - ssl-sidecar
+         - certificate-permissions
          - seclevel-fixer
 
       restart: always
 
    data-transformer:
-      image: viewsregistry.azurecr.io/prio-data/views_data_transformer:2.4.0
-
+      image: views3/data-transformer:2.4.1
       environment:
          LOG_LEVEL: $LOG_LEVEL
 
@@ -263,17 +253,16 @@ services:
 
       volumes:
          - ./logs:/home/gunicorn/log
-         - certs:/home/gunicorn/.postgresql
+         - certs:/home/gunicorn/.postgresql:ro
          - openssl-conf:/etc/ssl/
 
       depends_on:
-         - ssl-sidecar
+         - certificate-permissions
          - seclevel-fixer
 
       restart: always
 
 volumes:
-   home-vol:
    certs:
    openssl-conf:
 
