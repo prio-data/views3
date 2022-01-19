@@ -234,7 +234,6 @@ services:
 
    data-transformer:
       image: views3/data-transformer:2.4.1
-
       environment:
          LOG_LEVEL: $LOG_LEVEL
 
