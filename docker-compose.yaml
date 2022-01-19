@@ -242,7 +242,7 @@ services:
       restart: always
 
    data-transformer:
-      image: viewsregistry.azurecr.io/prio-data/views_data_transformer:2.3.1
+      image: viewsregistry.azurecr.io/prio-data/views_data_transformer:2.4.0
 
       environment:
          LOG_LEVEL: $LOG_LEVEL
