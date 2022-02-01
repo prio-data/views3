@@ -93,7 +93,7 @@ services:
       restart: always
 
    queryset-manager:
-      image: views3/queryset-manager:4.2.0
+      image: views3/queryset-manager:4.2.1
 
       environment:
          QUERYSET_MANAGER_DB_HOST: $QUERYSET_MANAGER_DB_HOST
