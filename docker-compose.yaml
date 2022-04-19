@@ -233,7 +233,7 @@ services:
       restart: always
 
    data-transformer:
-      image: views3/data-transformer:2.4.1
+      image: views3/data-transformer:2.5.7
       environment:
          LOG_LEVEL: $LOG_LEVEL
 
