@@ -8,7 +8,7 @@ services:
 
    certificate-permissions:
      image: bash:5.1.16 
-     entrypoint: ["bash", "-c", "cp /mnt/certs/* /mnt/fixed && chown -R 1005:1005 /mnt/fixed"]
+     entrypoint: ["bash", "-c", "cp /mnt/certs/* /mnt/fixed && chown -R 2000:2000 /mnt/fixed"]
      env_file:
        - gunicorn_config.env
      volumes:
@@ -18,8 +18,9 @@ services:
    storefront:
       image: views3/storefront:new_arch
 
-      env_file:
-         - services.env
+      environment:
+          QUERYSET_MANAGER_URL: $QUERYSET_MANAGER_URL
+          DATA_SERVICE_URL: $DATA_SERVICE_URL
 
       ports:
          - "4000:80"
@@ -49,14 +50,13 @@ services:
          QUERYSET_MANAGER_DB_NAME: $QUERYSET_MANAGER_DB_NAME
          QUERYSET_MANAGER_DB_USER: $QUERYSET_MANAGER_DB_USER
          QUERYSET_MANAGER_DB_SSL: $QUERYSET_MANAGER_DB_SSL
+
          DATA_SERVICE_URL: $DATA_SERVICE_URL
 
          LOG_LEVEL: $LOG_LEVEL
 
       env_file:
          - gunicorn_config.env
-         - services.env
-         - config.env
 
       ports:
          - "4002:8080"
@@ -86,14 +86,18 @@ services:
          && tail -f /dev/null"
 
       environment:
+
+         DATA_SERVICE_DB_HOST: $DATA_SERVICE_DB_HOST
+         DATA_SERVICE_DB_PORT: $DATA_SERVICE_DB_PORT
+         DATA_SERVICE_DB_NAME: $DATA_SERVICE_DB_NAME
+         DATA_SERVICE_DB_USER: $DATA_SERVICE_DB_USER
+         DATA_SERVICE_DB_SSL: $DATA_SERVICE_DB_SSL
+         DATA_SERVICE_DB_SCHEMA: $DATA_SERVICE_DB_SCHEMA
+
          LOG_LEVEL: $LOG_LEVEL
-         DATA_SERVICE_DB_HOST: $QUERYSET_MANAGER_DB_HOST
-         DATA_SERVICE_DB_USER: $QUERYSET_MANAGER_DB_USER
 
       env_file:
          - gunicorn_config.env
-         - services.env
-         - config.env
 
       ports:
          - "4003:8080"
@@ -116,38 +120,6 @@ services:
          - redis_db
 
       restart: always
-
-#   docs:
-#      image: views3/docs:4.0.1
-
-#      environment:
-#         DOCS_DB_HOST: $DOCS_DB_HOST
-#         DOCS_DB_PORT: $DOCS_DB_PORT
-#         DOCS_DB_NAME: $DOCS_DB_NAME
-#         DOCS_DB_USER: $DOCS_DB_USER
-#         DOCS_DB_SSL: $DB_SSL
-
-#         LOG_LEVEL: $LOG_LEVEL
-
-#      env_file:
-#         - gunicorn_config.env
-#         - services.env
-
-#      volumes:
-#         - ./logs:/home/gunicorn/log
-#         - openssl-conf:/etc/ssl/
-#         - certs:/home/gunicorn/.postgresql:ro
-
-#      ports:
-#         - "4001:8080"
-#      networks:
-#         - backend
-
-#      depends_on:
-#         - certificate-permissions
-#         - seclevel-fixer
-
-#      restart: always
 
 volumes:
    certs:
