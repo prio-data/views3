@@ -8,7 +8,7 @@ services:
 
    certificate-permissions:
      image: bash:5.1.16 
-     entrypoint: ["bash", "-c", "cp /mnt/certs/* /mnt/fixed && chown -R 2000:2000 /mnt/fixed"]
+     entrypoint: ["bash", "-c", "cp /mnt/certs/* /mnt/fixed && chown -R 1005:1005 /mnt/fixed"]
      env_file:
        - gunicorn_config.env
      volumes:
