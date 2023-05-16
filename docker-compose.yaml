@@ -23,7 +23,7 @@ services:
           DATA_SERVICE_URL: $DATA_SERVICE_URL
 
       ports:
-         - "4000:80"
+         - "80:80"
       networks:
          - backend
 
@@ -58,8 +58,8 @@ services:
       env_file:
          - gunicorn_config.env
 
-      ports:
-         - "4002:8080"
+      expose:
+         - "8080"
 
       volumes:
          - ./logs:/home/gunicorn/log
