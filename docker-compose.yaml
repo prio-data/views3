@@ -29,7 +29,13 @@ services:
          - queryset-manager
 
       restart: always
+      
+   redis_db:
+      image: redis
+      networks:
+         - backend
 
+      restart: always
 
    queryset-manager:
       image: views3/queryset-manager:4.2.1
@@ -62,6 +68,52 @@ services:
       depends_on:
          - certificate-permissions
          - seclevel-fixer
+
+      restart: always
+
+   data-service:
+      image: views3/views_data_service:dev
+
+      command: >
+         bash -c "cd /views_data_service/
+         && /home/gunicorn/.local/bin/celery -A celery_app worker --loglevel=INFO --logfile=/home/gunicorn/log/transform.log --detach -n worker_xform\%h --queues=transform
+         && /home/gunicorn/.local/bin/celery -A celery_app worker --loglevel=INFO --logfile=/home/gunicorn/log/fetch.log --detach --pool=solo -n worker_fetch\%h --queues=fetch
+         && python3 -m gunicorn -c /home/gunicorn/gunicorn.conf.py   
+         && tail -f /dev/null"
+
+      environment:
+
+         DATA_SERVICE_DB_HOST: $DATA_SERVICE_DB_HOST
+         DATA_SERVICE_DB_PORT: $DATA_SERVICE_DB_PORT
+         DATA_SERVICE_DB_NAME: $DATA_SERVICE_DB_NAME
+         DATA_SERVICE_DB_USER: $DATA_SERVICE_DB_USER
+         DATA_SERVICE_DB_SSL: $DATA_SERVICE_DB_SSL
+         DATA_SERVICE_DB_SCHEMA: $DATA_SERVICE_DB_SCHEMA
+
+         LOG_LEVEL: $LOG_LEVEL
+
+      env_file:
+         - gunicorn_config.env
+
+      expose:
+         - "8080"
+
+      extra_hosts:
+         - "hermes:130.238.55.73"
+
+      volumes:
+         - ./logs:/home/gunicorn/log
+         - ./cache:/home/gunicorn/cache
+         - openssl-conf:/etc/ssl/
+         - certs:/home/gunicorn/.postgresql:ro
+
+      networks:
+         - backend
+
+      depends_on:
+         - certificate-permissions
+         - seclevel-fixer
+         - redis_db
 
       restart: always
 
