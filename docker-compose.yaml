@@ -8,16 +8,19 @@ services:
 
    certificate-permissions:
      image: bash:5.1.16 
-     entrypoint: ["bash", "-c", "cp /mnt/certs/* /mnt/fixed && chown -R 1005:1005 /mnt/fixed"]
+     entrypoint: ["bash", "-c", "cp /mnt/certs/* /mnt/fixed && chown -R 2000:2000 /mnt/fixed"]
+     env_file:
+       - gunicorn_config.env
      volumes:
         - ~/.postgresql:/mnt/certs:ro
         - certs:/mnt/fixed:rw
 
    storefront:
-      image: views3/storefront:2.0.1
+      image: views3/storefront:new_arch
 
-      env_file:
-         - services.env
+      environment:
+          QUERYSET_MANAGER_URL: $QUERYSET_MANAGER_URL
+          DATA_SERVICE_URL: $DATA_SERVICE_URL
 
       ports:
          - "4000:80"
@@ -27,6 +30,7 @@ services:
       depends_on:
          - certificate-permissions
          - queryset-manager
+         - data-service
 
       restart: always
       
@@ -38,7 +42,7 @@ services:
       restart: always
 
    queryset-manager:
-      image: views3/queryset-manager:4.2.1
+      image: views3/queryset-manager:new_arch
 
       environment:
          QUERYSET_MANAGER_DB_HOST: $QUERYSET_MANAGER_DB_HOST
@@ -47,12 +51,12 @@ services:
          QUERYSET_MANAGER_DB_USER: $QUERYSET_MANAGER_DB_USER
          QUERYSET_MANAGER_DB_SSL: $QUERYSET_MANAGER_DB_SSL
 
+         DATA_SERVICE_URL: $DATA_SERVICE_URL
+
          LOG_LEVEL: $LOG_LEVEL
 
       env_file:
          - gunicorn_config.env
-         - services.env
-         - config.env
 
       ports:
          - "4002:8080"
@@ -78,7 +82,7 @@ services:
          bash -c "cd /views_data_service/
          && /home/gunicorn/.local/bin/celery -A celery_app worker --loglevel=INFO --logfile=/home/gunicorn/log/transform.log --detach -n worker_xform\%h --queues=transform
          && /home/gunicorn/.local/bin/celery -A celery_app worker --loglevel=INFO --logfile=/home/gunicorn/log/fetch.log --detach --pool=solo -n worker_fetch\%h --queues=fetch
-         && python3 -m gunicorn -c /home/gunicorn/gunicorn.conf.py   
+         && python3 -m gunicorn -c /home/gunicorn/gunicorn.conf.py
          && tail -f /dev/null"
 
       environment:
@@ -123,4 +127,4 @@ volumes:
 
 networks:
    backend:
-      name: views_integration
+
