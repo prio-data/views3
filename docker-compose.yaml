@@ -102,9 +102,6 @@ services:
       expose:
          - "8080"
 
-      extra_hosts:
-         - "hermes:130.238.55.73"
-
       volumes:
          - ./logs:/home/gunicorn/log
          - ./cache:/home/gunicorn/cache
