@@ -113,6 +113,7 @@ services:
          - ./logs:/home/gunicorn/log
          - ./cache:/home/gunicorn/cache
          - openssl-conf:/etc/ssl/
+	 - ~/.ingester3:/home/gunicorn/.ingester3
          - certs:/home/gunicorn/.postgresql:ro
 
       networks:
