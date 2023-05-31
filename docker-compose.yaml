@@ -40,6 +40,13 @@ services:
          - backend
 
       restart: always
+      
+   redis_db:
+      image: redis
+      networks:
+         - backend
+
+      restart: always
 
    queryset-manager:
       image: views3/queryset-manager:new_arch
@@ -106,6 +113,7 @@ services:
          - ./logs:/home/gunicorn/log
          - ./cache:/home/gunicorn/cache
          - openssl-conf:/etc/ssl/
+	 - ~/.ingester3:/home/gunicorn/.ingester3
          - certs:/home/gunicorn/.postgresql:ro
 
       networks:
