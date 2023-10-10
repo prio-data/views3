@@ -77,12 +77,15 @@ services:
       restart: always
 
    data-service:
-      image: views3/views_data_service:dev
+      image: views3/views_data_service:prod
 
       command: >
          bash -c "cd /views_data_service/
          && /home/gunicorn/.local/bin/celery -A celery_app worker --loglevel=INFO --logfile=/home/gunicorn/log/transform.log --detach -n worker_xform\%h --queues=transform
-         && /home/gunicorn/.local/bin/celery -A celery_app worker --loglevel=INFO --logfile=/home/gunicorn/log/fetch.log --detach --pool=solo -n worker_fetch\%h --queues=fetch
+         && /home/gunicorn/.local/bin/celery -A celery_app worker --loglevel=INFO --logfile=/home/gunicorn/log/fetch.log --detach --pool=solo -n worker_fetch0\%h --queues=fetch0
+         && /home/gunicorn/.local/bin/celery -A celery_app worker --loglevel=INFO --logfile=/home/gunicorn/log/fetch.log --detach --pool=solo -n worker_fetch1\%h --queues=fetch1
+         && /home/gunicorn/.local/bin/celery -A celery_app worker --loglevel=INFO --logfile=/home/gunicorn/log/fetch.log --detach --pool=solo -n worker_fetch2\%h --queues=fetch2
+         && /home/gunicorn/.local/bin/celery -A celery_app worker --loglevel=INFO --logfile=/home/gunicorn/log/fetch.log --detach --pool=solo -n worker_fetch3\%h --queues=fetch3
          && python3 -m gunicorn -c /home/gunicorn/gunicorn.conf.py
          && tail -f /dev/null"
 
