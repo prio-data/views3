@@ -56,6 +56,8 @@ services:
 
          LOG_LEVEL: $LOG_LEVEL
 
+         LOGDIR: $LOGDIR
+
       env_file:
          - gunicorn_config.env
 
@@ -63,7 +65,7 @@ services:
          - "8080"
 
       volumes:
-         - ./logs:/home/gunicorn/log
+         - ./logs:$LOGDIR
          - openssl-conf:/etc/ssl/
          - certs:/home/gunicorn/.postgresql:ro
 
@@ -99,6 +101,13 @@ services:
          DATA_SERVICE_DB_SCHEMA: $DATA_SERVICE_DB_SCHEMA
 
          LOG_LEVEL: $LOG_LEVEL
+         LOGDIR: $LOGDIR
+         CACHEDIR: $CACHEDIR
+         GRAPHDIR: $GRAPHDIR
+
+         REDIS_HOST: $REDIS_HOST
+         REDIS_PORT: $REDIS_PORT
+         REDIS_DB: $REDIS_DB
 
       env_file:
          - gunicorn_config.env
@@ -107,8 +116,9 @@ services:
          - "8080"
 
       volumes:
-         - ./logs:/home/gunicorn/log
-         - ./cache:/home/gunicorn/cache
+         - ./logs:$LOGDIR
+         - ./cache:$CACHEDIR
+         - ./graphs:$GRAPHDIR
          - openssl-conf:/etc/ssl/
          - certs:/home/gunicorn/.postgresql:ro
          - /home/views_data/.ingester3:/home/gunicorn/.ingester3
