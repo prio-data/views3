@@ -16,7 +16,8 @@ services:
         - certs:/mnt/fixed:rw
 
    storefront:
-      image: views3/storefront:new_arch
+#      image: views3/storefront:3.1.0
+      image: views3/storefront:3.2.0
 
       environment:
           QUERYSET_MANAGER_URL: $QUERYSET_MANAGER_URL
@@ -43,7 +44,8 @@ services:
       restart: always
       
    queryset-manager:
-      image: views3/queryset-manager:new_arch
+#      image: views3/queryset-manager:new_arch
+      image: views3/queryset-manager:5.1.1
 
       environment:
          QUERYSET_MANAGER_DB_HOST: $QUERYSET_MANAGER_DB_HOST
@@ -79,11 +81,13 @@ services:
       restart: always
 
    data-service:
-      image: views3/views_data_service:prod
+      image: views3/views_data_service:1.3.1
+#      image: views3/views_data_service:1.3.0
+#      image: views3/views_data_service:debug
 
       command: >
          bash -c "cd /views_data_service/
-         && /home/gunicorn/.local/bin/celery -A celery_app worker --loglevel=INFO --logfile=/home/gunicorn/log/transform.log --detach -n worker_xform\%h --queues=transform
+         && /home/gunicorn/.local/bin/celery -A celery_app worker --loglevel=INFO --logfile=/home/gunicorn/log/transform.log --detach -n worker_xform\%h --queues=transform --concurrency=8
          && /home/gunicorn/.local/bin/celery -A celery_app worker --loglevel=INFO --logfile=/home/gunicorn/log/fetch.log --detach --pool=solo -n worker_fetch0\%h --queues=fetch0
          && /home/gunicorn/.local/bin/celery -A celery_app worker --loglevel=INFO --logfile=/home/gunicorn/log/fetch.log --detach --pool=solo -n worker_fetch1\%h --queues=fetch1
          && /home/gunicorn/.local/bin/celery -A celery_app worker --loglevel=INFO --logfile=/home/gunicorn/log/fetch.log --detach --pool=solo -n worker_fetch2\%h --queues=fetch2
